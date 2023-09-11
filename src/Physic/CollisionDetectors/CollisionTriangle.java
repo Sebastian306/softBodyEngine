@@ -1,5 +1,6 @@
 package Physic.CollisionDetectors;
 
+import Physic.Field;
 import Physic.Objects.Point;
 import Physic.Objects.PhysicalObjects;
 import Physic.Vec2d;
@@ -18,6 +19,19 @@ public class CollisionTriangle implements CollisionDetector{
         objects[1] = poB;
         objects[2] = poC;
         this.outOf = outOf;
+    }
+
+    @Override
+    public Field getField() {
+        Vec2d A = objects[0].getPosition();
+        Vec2d B = objects[1].getPosition();
+        Vec2d C = objects[2].getPosition();
+        double minX = Math.min(Math.min(A.getX(), B.getX()), C.getX());
+        double maxX = Math.max(Math.max(A.getX(), B.getX()), C.getX());
+        double minY = Math.min(Math.min(A.getY(), B.getY()), C.getY());
+        double maxY = Math.max(Math.max(A.getY(), B.getY()), C.getY());
+
+        return new Field(minX, minY, maxX - minX, maxY - minY);
     }
 
     @Override

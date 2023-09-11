@@ -1,5 +1,6 @@
 package Physic.CollisionDetectors;
 
+import Physic.Field;
 import Physic.Objects.Point;
 import Physic.Vec2d;
 
@@ -22,6 +23,19 @@ public class CollisionTriangleBox implements CollisionDetector{
             throw new RuntimeException("friction cannot be negative");
         if(this.friction > 1)
             throw new RuntimeException("friction cannot be greater than 1");
+    }
+
+    @Override
+    public Field getField() {
+        Vec2d A = points[0];
+        Vec2d B = points[1];
+        Vec2d C = points[2];
+        double minX = Math.min(Math.min(A.getX(), B.getX()), C.getX());
+        double maxX = Math.max(Math.max(A.getX(), B.getX()), C.getX());
+        double minY = Math.min(Math.min(A.getY(), B.getY()), C.getY());
+        double maxY = Math.max(Math.max(A.getY(), B.getY()), C.getY());
+
+        return new Field(minX, minY, maxX - minX, maxY - minY);
     }
 
     @Override

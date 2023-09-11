@@ -1,7 +1,7 @@
 package Physic.Objects;
 
 import Physic.Forces.ForceAbstract;
-import Physic.SpacePanel;
+import Physic.Canvas.SpacePanel;
 import Physic.Vec2d;
 
 import java.awt.*;

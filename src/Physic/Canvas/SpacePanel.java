@@ -1,9 +1,10 @@
-package Physic;
+package Physic.Canvas;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+import Physic.ChunkBox;
 import Physic.CollisionDetectors.*;
 import Physic.Connections.Connection;
 import Physic.Connections.SpringConnection;
@@ -12,13 +13,13 @@ import Physic.Mesh.Mesh;
 import Physic.Objects.*;
 import Physic.Objects.Point;
 import Physic.Telemetry.Telemetry;
+import Physic.Vec2d;
 
 public class SpacePanel extends JPanel {
 
     private int width = 600;
     private int height = 600;
     private double timeRate = 0.01;
-    private int frameTime = 0;
     private int physicFrameCount = 40;
     private int fps = 30;
     private double lastFrameTime = System.currentTimeMillis();
@@ -32,6 +33,7 @@ public class SpacePanel extends JPanel {
     private Vec2d center = new Vec2d(0,0);
     private boolean drawMode = true;
     private Telemetry telemetry = new Telemetry();
+    private ChunkBox chbox = new ChunkBox(-100, -100, 1000, 1000, 50, 50);
 
 
     public SpacePanel(){
@@ -71,6 +73,10 @@ public class SpacePanel extends JPanel {
 
         for(PhysicalObjects po : physicalObjects){
             po.positionUpdate(timeRate);
+
+        }
+        for(Point p : collisionPoints){
+            chbox.setObject(p);
         }
 
         telemetry.addTimeInfo("physicsCalculations", System.currentTimeMillis() - lastTime);
@@ -82,12 +88,15 @@ public class SpacePanel extends JPanel {
             count++;
             collisionDetected = false;
             for (CollisionDetector cd : collisionDetectors) {
-                for (Physic.Objects.Point cp : collisionPoints) {
+                //System.out.println(cd.getField());
+                int indCount = 0;
+                for (Physic.Objects.Point cp : chbox.getCollisionCandidates(cd.getField())){
+                    indCount ++;
                     if(cd.checkCollision(cp)){
                         collisionDetected = true;
                     };
                 }
-
+                telemetry.addTimeInfo("collision candidates", indCount);
             }
         }
 
@@ -128,6 +137,11 @@ public class SpacePanel extends JPanel {
         collisionDetectors = new ArrayList<CollisionDetector>();
         collisionPoints = new ArrayList<Physic.Objects.Point>();
         meshs = new ArrayList<Mesh>();
+    }
+
+    @Override
+    public void setBackground(Color bg) {
+        super.setBackground(bg);
     }
 
     public double getTimeRate() {
@@ -277,8 +291,8 @@ public class SpacePanel extends JPanel {
     }
 
     public Pivot[] createRoundBlob(double x, double y, double radious, double kb, double kc, double b, double mass, Color color){
-        final int elemCount = 32;
-        mass /= 60;
+        final int elemCount = 16;
+        mass /= 2*elemCount;
         Pivot[] p = new Pivot[elemCount + 1];
         p[0] = createPivot(x,y,mass);
 
@@ -294,10 +308,19 @@ public class SpacePanel extends JPanel {
 
         for(int i = 0; i<elemCount; i++){
             int ind = (i+1)%elemCount;
-            createSpring(border[i], border[ind], border[ind].getPosition().distance(border[i].getPosition()), kc, b, 1., 100.);
+            createSpring(border[i], border[ind], border[ind].getPosition().distance(border[i].getPosition()), kb/2., b, 1., 100.);
 
             ind = (i+4)%elemCount;
+            createSpring(border[i], border[ind], border[ind].getPosition().distance(border[i].getPosition()), kc/2., b, 1., 100.);
+
+            ind = (i+elemCount/2)%elemCount;
             createSpring(border[i], border[ind], border[ind].getPosition().distance(border[i].getPosition()), kc, b, 1., 100.);
+
+            ind = (i+1)%elemCount;
+            createCollisionTriangle(border[i], border[ind], p[0], p);
+
+            ind = (i+2)%elemCount;
+            createCollisionTriangle(border[i], border[ind], p[0], p);
         }
 
         return p;
