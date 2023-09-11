@@ -1,4 +1,5 @@
 import Physic.Canvas.SpacePanel;
+import Physic.GameEngine;
 import Physic.Telemetry.Telemetry;
 
 import javax.swing.*;
@@ -20,24 +21,34 @@ public class Main {
         JFrame MainFrame = new JFrame();
         MainFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        SpacePanel sp = new SpacePanel();
+        GameEngine ge = new GameEngine();
+
+        SpacePanel sp = new SpacePanel(ge);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
 
         final Telemetry tel = new Telemetry();
         sp.setTelemetry(tel);
+        ge.setTelemetry(tel);
 
-        Scene3(sp);
+        Scene3(sp, ge);
 
-        MainFrame.add(sp);
-        MainFrame.setSize(600,600);
+        mainPanel.add(sp);
+
+        MainFrame.add(mainPanel);
+        MainFrame.setSize(1200,600);
         MainFrame.setLocationRelativeTo(null);
 
         final double startTime = System.currentTimeMillis();
         MainFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
+                ge.setRunning(false);
                 EndFunctions.windowClosing(evt, tel, startTime);
             }
         });
 
+        Thread gameTread = new Thread(ge);
+        gameTread.start();
         MainFrame.setVisible(true);
     }
 }

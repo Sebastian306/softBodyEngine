@@ -2,6 +2,7 @@ package Physic.Objects;
 
 import Physic.Forces.ForceAbstract;
 import Physic.Canvas.SpacePanel;
+import Physic.GameEngine;
 import Physic.Vec2d;
 
 import java.awt.*;
@@ -13,7 +14,7 @@ public abstract class PhysicalObjects {
     protected double mass;
     protected HashSet<ForceAbstract> forces = new HashSet<ForceAbstract>();
     protected Vec2d accelation;
-    protected SpacePanel space;
+    protected GameEngine gameEngine;
 
     public Vec2d getPosition(){
         return position[0];
@@ -28,11 +29,11 @@ public abstract class PhysicalObjects {
     };
 
     public Vec2d getVelocity() {
-        return position[0].sub(position[1]).div(space.getTimeRate());
+        return position[0].sub(position[1]).div(gameEngine.getTimeRate());
     }
 
     public void setVelocity(Vec2d velocity) {
-        position[1] = position[0].sub(velocity.mult(space.getTimeRate()));
+        position[1] = position[0].sub(velocity.mult(gameEngine.getTimeRate()));
     }
 
     public void setMass(double mass) {
@@ -57,12 +58,12 @@ public abstract class PhysicalObjects {
         forces.remove(f);
     };
 
-    public void setSpace(SpacePanel space) {
-        this.space = space;
+    public void setGameEngine(GameEngine gameEngine) {
+        this.gameEngine = gameEngine;
     }
 
-    public SpacePanel getSpace() {
-        return space;
+    public GameEngine getGameEngine() {
+        return gameEngine;
     }
 
     public Vec2d getAcceleration() {
@@ -77,7 +78,8 @@ public abstract class PhysicalObjects {
         this.accelation = getAcceleration();
     }
 
-    public void positionUpdate(double t){
+    public void positionUpdate(){
+        double t = gameEngine.getTimeRate();
         //System.out.println(String.format("_______accL : %f, acc : %s", accelation.length(), accelation.toString()));
         Vec2d pos = position[0].mult(2).sub(position[1]).add(accelation.mult(t*t));
         position[1] = position[0];

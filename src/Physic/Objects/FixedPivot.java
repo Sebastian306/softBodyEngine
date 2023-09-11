@@ -55,7 +55,7 @@ public class FixedPivot extends PhysicalObjects implements Point{
     }
 
     @Override
-    public void positionUpdate(double t) {}
+    public void positionUpdate() {}
 
     public double getX(){
         return getPosition().getX();
