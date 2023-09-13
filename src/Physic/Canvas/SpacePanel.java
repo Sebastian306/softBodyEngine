@@ -53,7 +53,7 @@ public class SpacePanel extends JPanel {
             e.printStackTrace();
         }
 
-        telemetry.addTimeInfo("frame", System.currentTimeMillis() - usedTime);
+        telemetry.addTimeInfo("frame - drawing and sleep", System.currentTimeMillis() - usedTime);
         repaint();
     }
 

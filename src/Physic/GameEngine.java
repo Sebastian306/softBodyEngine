@@ -23,26 +23,25 @@ public class GameEngine implements Runnable{
     private GravityForce gravity = new GravityForce(new Vec2d(0,0));
     private double scale = 1.5;
     private Vec2d center = new Vec2d(0,0);
-    private ChunkBox chbox = new ChunkBox(-100, -100, 1000, 1000, 50, 50);
+    private ChunkBox chbox = new ChunkBox(-100, -100, 600, 600, 70, 70);
     private double maxTimeRate = 0.01;
-    private double minTimeRate = 0.0001;
+    private double minTimeRate = 0.000000001;
     private double timeRate = minTimeRate;
-    private double timeSpeed = 0.00000001;
+    private double timeRateDiff = 1;
+    private double timeSpeed = 0.01;
     private Telemetry telemetry;
     private boolean running = true;
-    private long lastFrameTime = -1;
-    private long currentFrame = -1;
+    private double currentFrame = -1;
 
     public void run(){
         while (running){
-            lastFrameTime = currentFrame;
-            currentFrame = System.nanoTime();
+            double estimatedTime = (System.nanoTime()/1000000. - currentFrame);
 
-            double res = ((double)currentFrame - (double)lastFrameTime);
-            if(lastFrameTime == -1){
-                res =  0.;
-            }
-            timeRate = Math.min(maxTimeRate, Math.max(minTimeRate, res * timeSpeed));
+            currentFrame = (double)System.nanoTime()/1000000.;
+
+            double oldTimeRate = timeRate;
+            timeRate = Math.min(maxTimeRate, Math.max(minTimeRate, estimatedTime * timeSpeed));
+            timeRateDiff = timeRate/oldTimeRate;
             telemetry.addTimeInfo("timeRate", timeRate);
 
             calculateFrame();
@@ -57,32 +56,41 @@ public class GameEngine implements Runnable{
         this.telemetry = telemetry;
     }
 
+    public double getTimeRateDiff() {
+        return timeRateDiff;
+    }
+
     public void calculateFrame(){
-        double lastTime = System.currentTimeMillis();
+        double fullTime = System.nanoTime();
+        double lastTime = System.nanoTime();
+        double loopTime = lastTime;
         for(PhysicalObjects po : physicalObjects){
             po.accelerationUpdate();
         }
-        telemetry.addTimeInfo("accelerationCalculations", System.currentTimeMillis() - lastTime);
-        lastTime = System.currentTimeMillis();
+        telemetry.addTimeInfo("accelerationCalculations", (System.nanoTime() - fullTime)/1000000);
+        lastTime = System.nanoTime();
 
         for(PhysicalObjects po : physicalObjects){
             po.positionUpdate();
 
         }
+        telemetry.addTimeInfo("physicsCalculations", (System.nanoTime() - fullTime)/1000000);
+        lastTime = System.nanoTime();
+
         for(Point p : collisionPoints){
             chbox.setObject(p);
         }
 
-        telemetry.addTimeInfo("physicsCalculations", System.currentTimeMillis() - lastTime);
-        lastTime = System.currentTimeMillis();
+        telemetry.addTimeInfo("chunk box update", (System.nanoTime() - fullTime)/1000000);
+
+        lastTime = System.nanoTime();
 
         boolean collisionDetected = true;
         int count = 0;
-        while(collisionDetected && count < 10) {
+        while(collisionDetected && count < 5) {
             count++;
             collisionDetected = false;
             for (CollisionDetector cd : collisionDetectors) {
-                //System.out.println(cd.getField());
                 int indCount = 0;
                 for (Physic.Objects.Point cp : chbox.getCollisionCandidates(cd.getField())){
                     indCount ++;
@@ -94,7 +102,8 @@ public class GameEngine implements Runnable{
             }
         }
 
-        telemetry.addTimeInfo("collisionCalculations", System.currentTimeMillis() - lastTime);
+        telemetry.addTimeInfo("collisionCalculations", (System.nanoTime() - fullTime)/1000000);
+        telemetry.addTimeInfo("frame - game", (System.nanoTime() - fullTime)/1000000);
     }
 
     public void resetGame(){
@@ -263,10 +272,10 @@ public class GameEngine implements Runnable{
         createCollisionTriangle(p[6],p[4],p[0], p);
         createCollisionTriangle(p[4],p[0],p[2], p);
 
-        //createCollisionConnection(p[0],p[2]);
-        //createCollisionConnection(p[2],p[6]);
-        //createCollisionConnection(p[6],p[4]);
-        //createCollisionConnection(p[4],p[0]);
+        createCollisionTriangle(p[1],p[2],p[3], p);
+        createCollisionTriangle(p[3],p[4],p[5], p);
+        createCollisionTriangle(p[5],p[6],p[7], p);
+        createCollisionTriangle(p[7],p[0],p[1], p);
 
         return new Pivot[]{p[0],p[2],p[6],p[4]};
     }

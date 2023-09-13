@@ -31,7 +31,7 @@ public class Pivot extends PhysicalObjects implements Point {
 
         g.fillOval( (int)p.getX() - radious, (int)p.getY() - radious, 2*radious, 2*radious);
 
-        DrawForces(g, scale, center);
+        //DrawForces(g, scale, center);
     }
 
     public void DrawForces(Graphics g, double scale, Vec2d center){

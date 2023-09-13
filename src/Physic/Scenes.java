@@ -38,7 +38,7 @@ public class Scenes {
         ge.createRoundBlob(100,100,60,20, 0.16, 0.1, 1, new Color(255, 20, 20));
         ge.createRoundBlob(230,100,60,20, 0.16, 0.1, 1, new Color(255, 145, 20));
         ge.createRoundBlob(110,0,30,20, 0.07, 0.1, 2, new Color(15, 2, 255));
-        ge.createRoundBlob(70,-50,30,20, 0.1, 0.1, 2, new Color(121, 114, 255));
+        ge.createRoundBlob(70,-150,30,20, 0.1, 0.1, 2, new Color(121, 114, 255));
         ge.createRoundBlob(200,0,30,20, 0.1, 0.1, 2, new Color(129, 25, 211));
         ge.setGravity(new GravityForce(new Vec2d(0,9)));
         ge.setScale(1.3);

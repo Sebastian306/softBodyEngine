@@ -50,11 +50,19 @@ public class CollisionTriangle implements CollisionDetector{
         if(!cd.colisionOccured)
             return false;
 
-        double bodyProp = 0.6;
-        double pointProp = 0.6;
+        double bodyProp = 1.01;
+        double pointProp = 0;
+
+        if(po instanceof PhysicalObjects){
+            double pm = ((PhysicalObjects) po).getMass();
+            double tm = objects[0].getMass() + objects[1].getMass() + objects[2].getMass();
+            bodyProp = pm / (tm + pm) * 1.01;
+            pointProp = tm / (tm + pm) * 1.01;
+        }
+
 
         //System.out.println(cd);
-        //System.out.println(String.format("%s, %s, %s, %s",A,B,C,P));
+        //System.out.println(StriWng.format("%s, %s, %s, %s",A,B,C,P));
         if(Double.isNaN(cd.c1))
             return false;
         An = A.add(cd.delta.mult(cd.c1*cd.l * bodyProp));

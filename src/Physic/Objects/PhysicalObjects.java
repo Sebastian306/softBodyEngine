@@ -2,7 +2,9 @@ package Physic.Objects;
 
 import Physic.Forces.ForceAbstract;
 import Physic.Canvas.SpacePanel;
+import Physic.Forces.SpringForce;
 import Physic.GameEngine;
+import Physic.Telemetry.Telemetry;
 import Physic.Vec2d;
 
 import java.awt.*;
@@ -69,7 +71,9 @@ public abstract class PhysicalObjects {
     public Vec2d getAcceleration() {
         Vec2d acc = new Vec2d(0,0);
         for(ForceAbstract f: forces){
+            double lastTime = System.nanoTime();
             acc = acc.add(f.getForce(this).div(mass));
+
         }
         return acc;
     }
@@ -80,8 +84,7 @@ public abstract class PhysicalObjects {
 
     public void positionUpdate(){
         double t = gameEngine.getTimeRate();
-        //System.out.println(String.format("_______accL : %f, acc : %s", accelation.length(), accelation.toString()));
-        Vec2d pos = position[0].mult(2).sub(position[1]).add(accelation.mult(t*t));
+        Vec2d pos = position[0].add(position[0].sub(position[1]).mult(gameEngine.getTimeRateDiff())).add(accelation.mult(t*t));
         position[1] = position[0];
         position[0] = pos;
     }

@@ -2,6 +2,7 @@ package Physic.Forces;
 
 import Physic.Connections.SpringConnection;
 import Physic.Objects.PhysicalObjects;
+import Physic.Telemetry.Telemetry;
 import Physic.Vec2d;
 
 public class SpringForce extends ForceAbstract{
@@ -10,6 +11,10 @@ public class SpringForce extends ForceAbstract{
 
     public SpringForce(SpringConnection spring){
         this.spring = spring;
+    }
+
+    public SpringConnection getSpring() {
+        return spring;
     }
 
     @Override
@@ -42,12 +47,6 @@ public class SpringForce extends ForceAbstract{
             dampingRate = Math.min(dist, Math.abs(dampingRate)) * Math.signum(dampingRate);
 
             Vec2d damping = direction.mult(dampingRate);
-
-            if(dist < spring.getCriticalSize()){
-                //add randomnes to small distances
-                //direction = direction.add(new Vec2d(Math.random()-0.5, Math.random()-0.5));
-            }
-
 
             return direction.mult(force).sub(damping);
         }

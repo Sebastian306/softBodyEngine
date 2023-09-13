@@ -7,6 +7,8 @@ public class TimeData {
     private double timeSum;
     private double recordsCount;
     private double maxRecordToColect = 10000;
+    private double minRecord = Double.POSITIVE_INFINITY;
+    private double maxRecord = Double.NEGATIVE_INFINITY;
     private ArrayList<Double> records;
 
     public TimeData(){
@@ -16,8 +18,8 @@ public class TimeData {
     }
 
     public void addRecord(double time){
-        if(records.size() < maxRecordToColect)
-            records.add(time);
+        minRecord = Math.min(minRecord, time);
+        maxRecord = Math.max(maxRecord, time);
         timeSum += time;
         recordsCount++;
     }
@@ -35,11 +37,11 @@ public class TimeData {
     }
 
     public double getMaxRecord(){
-        return Collections.max(records);
+        return maxRecord;
     }
 
     public double getMinRecord(){
-        return Collections.min(records);
+        return minRecord;
     }
 
 

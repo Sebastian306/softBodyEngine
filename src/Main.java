@@ -24,16 +24,19 @@ public class Main {
         GameEngine ge = new GameEngine();
 
         SpacePanel sp = new SpacePanel(ge);
+        SpacePanel pp = new SpacePanel(ge);
+        pp.setDrawMode(false);
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
 
-        final Telemetry tel = new Telemetry();
-        sp.setTelemetry(tel);
-        ge.setTelemetry(tel);
+        sp.setTelemetry(Telemetry.mainTelemetry);
+        pp.setTelemetry(Telemetry.mainTelemetry);
+        ge.setTelemetry(Telemetry.mainTelemetry);
 
         Scene3(sp, ge);
 
         mainPanel.add(sp);
+        mainPanel.add(pp);
 
         MainFrame.add(mainPanel);
         MainFrame.setSize(1200,600);
@@ -43,7 +46,7 @@ public class Main {
         MainFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
                 ge.setRunning(false);
-                EndFunctions.windowClosing(evt, tel, startTime);
+                EndFunctions.windowClosing(evt, Telemetry.mainTelemetry, startTime);
             }
         });
 
