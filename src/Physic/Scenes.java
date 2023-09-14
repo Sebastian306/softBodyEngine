@@ -7,10 +7,22 @@ import Physic.Objects.Pivot;
 import Physic.Objects.Point;
 
 import java.awt.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public class Scenes {
+
+    private static BiConsumer<SpacePanel, GameEngine> scene1 = Scenes::Scene1;
+    private static BiConsumer<SpacePanel, GameEngine> scene2 = Scenes::Scene2;
+    private static BiConsumer<SpacePanel, GameEngine> scene3 = Scenes::Scene3;
+    private static BiConsumer<SpacePanel, GameEngine>[] scenes = new BiConsumer[]{scene1, scene2, scene3};
+
+    public static BiConsumer<SpacePanel, GameEngine>[] getScenes() {
+        return scenes.clone();
+    }
+
     public static void Scene1(SpacePanel sp, GameEngine ge){
-        Pivot[] blob1 = ge.createSquareBlob(12,100,60,0.3, 0.1, 1, new Color(215, 78, 54));
+        Pivot[] blob1 = ge.createSquareBlob(12,100,60,0.5, 0.1, 1, new Color(215, 78, 54));
         ge.createSquareBlob(120,0,50,3,0.08, 5, new Color(229, 138, 55));
         ge.createSquareBlob(30,10,60,1,0.08, 5, new Color(222, 57, 108));
         ge.createSquareBlob(133,-50,40,0.8,0.1, 3, new Color(147, 24, 24));

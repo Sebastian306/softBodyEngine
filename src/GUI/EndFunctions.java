@@ -1,3 +1,5 @@
+package GUI;
+
 import Physic.Telemetry.Telemetry;
 import Physic.Telemetry.TimeData;
 
@@ -5,7 +7,7 @@ import java.awt.event.WindowEvent;
 import java.util.Map;
 
 public class EndFunctions {
-    public static void windowClosing(WindowEvent evt, Telemetry telemetry, double StartTime) {
+    public static void windowClosing(Telemetry telemetry, double StartTime) {
         Map<String, TimeData> data = telemetry.getTimeUsesInfo();
         String collPlot = null;
         String accPlot = null;
@@ -23,7 +25,6 @@ public class EndFunctions {
         System.out.println(String.format("total time : %f ms", System.currentTimeMillis() - StartTime));
         if(collPlot != null)System.out.println(collPlot);
         if(accPlot != null)System.out.println(accPlot);
-        System.exit(0);
     }
 
     public static String plot(String title, TimeData inf, double range[]){

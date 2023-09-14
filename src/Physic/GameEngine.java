@@ -87,7 +87,7 @@ public class GameEngine implements Runnable{
 
         boolean collisionDetected = true;
         int count = 0;
-        while(collisionDetected && count < 5) {
+        while(collisionDetected && count < 10) {
             count++;
             collisionDetected = false;
             for (CollisionDetector cd : collisionDetectors) {
@@ -267,15 +267,15 @@ public class GameEngine implements Runnable{
         createSpring(p[1],p[5],p[1].getPosition().distance(p[5].getPosition()),k + 0.2, b, 2, 100);
         createSpring(p[3],p[7],p[3].getPosition().distance(p[7].getPosition()),k + 0.2, b, 2, 100);
 
+        createCollisionTriangle(p[1],p[2],p[4], p);
+        createCollisionTriangle(p[3],p[4],p[6], p);
+        createCollisionTriangle(p[5],p[6],p[0], p);
+        createCollisionTriangle(p[7],p[0],p[2], p);
+
         createCollisionTriangle(p[0],p[2],p[6], p);
         createCollisionTriangle(p[2],p[6],p[4], p);
         createCollisionTriangle(p[6],p[4],p[0], p);
         createCollisionTriangle(p[4],p[0],p[2], p);
-
-        createCollisionTriangle(p[1],p[2],p[3], p);
-        createCollisionTriangle(p[3],p[4],p[5], p);
-        createCollisionTriangle(p[5],p[6],p[7], p);
-        createCollisionTriangle(p[7],p[0],p[1], p);
 
         return new Pivot[]{p[0],p[2],p[6],p[4]};
     }

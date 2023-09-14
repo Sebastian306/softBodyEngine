@@ -20,7 +20,6 @@ public class GravityForce extends ForceAbstract{
         return gravityConst;
     }
 
-
     public void setConst(Vec2d gravityConst) {
         this.gravityConst = gravityConst;
     }
