@@ -9,6 +9,9 @@ import java.awt.*;
 
 import static Physic.MathFunctions.rescale;
 
+/**
+ * Represents a spring connection between two physical objects.
+ */
 public class SpringConnection extends Connection {
 
     private double size;
@@ -16,17 +19,28 @@ public class SpringConnection extends Connection {
     private double b;
     private SpringForce springForce;
     private double dotDistance = 8;
-    private int radious = 4;
+    private int radius = 4;
     private double maxForce = 100;
     private double criticalSize = 0;
     private double criticalK = 100;
     private double maxDrawingForce = 5;
 
-    public SpringConnection(PhysicalObjects poA, PhysicalObjects poB, double size, double k, double b, double criticalSize, double criticalK){
+    /**
+     * Constructs a SpringConnection with specified physical objects, size, spring constant (k), and damping coefficient (b).
+     *
+     * @param poA         The first physical object connected by the spring.
+     * @param poB         The second physical object connected by the spring.
+     * @param size        The size of the spring.
+     * @param k           The spring constant.
+     * @param b           The damping coefficient.
+     * @param criticalSize The critical size for the spring.
+     * @param criticalK   The critical spring constant.
+     */
+    public SpringConnection(PhysicalObjects poA, PhysicalObjects poB, double size, double k, double b, double criticalSize, double criticalK) {
         this.size = size;
         this.k = k;
         this.b = b;
-        this.objects = new PhysicalObjects[]{poA,poB};
+        this.objects = new PhysicalObjects[]{poA, poB};
         this.springForce = new SpringForce(this);
         poA.addForce(this.springForce);
         poB.addForce(this.springForce);
@@ -34,16 +48,14 @@ public class SpringConnection extends Connection {
         this.criticalK = criticalK;
     }
 
-    public SpringConnection(PhysicalObjects poA, PhysicalObjects poB, double size, double k, double b){
-        this.size = size;
-        this.k = k;
-        this.b = b;
-        this.objects = new PhysicalObjects[]{poA,poB};
-        this.springForce = new SpringForce(this);
-        poA.addForce(this.springForce);
-        poB.addForce(this.springForce);
-    }
-
+    /**
+     * Constructs a SpringConnection with specified physical objects, size, spring constant (k), and default damping coefficient (b = 0).
+     *
+     * @param poA The first physical object connected by the spring.
+     * @param poB The second physical object connected by the spring.
+     * @param size The size of the spring.
+     * @param k    The spring constant.
+     */
     public SpringConnection(PhysicalObjects poA, PhysicalObjects poB, double size, double k){
         this.size = size;
         this.k = k;
@@ -111,7 +123,7 @@ public class SpringConnection extends Connection {
             Vec2d p1 = new Vec2d(pos.getX(), pos.getY());
             p1 = rescale(p1, scale, center);
 
-            g.fillOval((int)p1.getX() - radious, (int)p1.getY() - radious, (int)(2*radious), (int)(2*radious));
+            g.fillOval((int)p1.getX() - radius, (int)p1.getY() - radius, (int)(2*radius), (int)(2*radius));
             pos = pos.add(diff);
         }
     }

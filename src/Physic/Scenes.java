@@ -26,7 +26,7 @@ public class Scenes {
         ge.createSquareBlob(120,0,50,3,0.08, 5, new Color(229, 138, 55));
         ge.createSquareBlob(30,10,60,1,0.08, 5, new Color(222, 57, 108));
         ge.createSquareBlob(133,-50,40,0.8,0.1, 3, new Color(147, 24, 24));
-        ge.createSquareBlob(115,80,40,1,0.05, 4, new Color(246, 255, 152));
+        ge.createSquareBlob(115,80,40,0.8,0.05, 4, new Color(246, 255, 152));
         ge.createSquareBlob(160,80,30,2,0.1, 1, new Color(255, 255, 0));
         ge.createSquareBlob(30,-50,50,2,0.1, 3, new Color(162, 255, 0));
         Pivot[] blob2 = ge.createSquareBlob(90,-50,30,2,0.1, 3, new Color(255, 0, 215));

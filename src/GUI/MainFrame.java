@@ -55,7 +55,6 @@ public class MainFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         for(int i = 0; i < scenes.length; i++){
             if(e.getSource().equals(scenesButt[i])){
-                System.out.println("koko");
                 JFrame nf = new SceneFrame(scenes[i]);
                 nf.setVisible(true);
             }

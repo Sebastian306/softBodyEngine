@@ -19,6 +19,7 @@ public class SceneFrame extends JFrame {
     private SpacePanel sp2 = new SpacePanel(ge);
     private JPanel mainPanel = new JPanel();
     private double startTime;
+
     public SceneFrame(BiConsumer<SpacePanel, GameEngine> scene) {
         this.setSize(width, height);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -37,7 +38,7 @@ public class SceneFrame extends JFrame {
         mainPanel.add(sp2);
 
         this.add(mainPanel);
-        this.setSize(1200,600);
+        this.setSize(1200, 600);
         this.setLocationRelativeTo(null);
 
         final double startTime = System.currentTimeMillis();

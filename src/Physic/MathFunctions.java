@@ -11,22 +11,46 @@ public class MathFunctions {
         return (C.getY()-A.getY()) * (B.getX()-A.getX()) > (B.getY()-A.getY()) * (C.getX()-A.getX());
     }
 
-    public static boolean intersect(Vec2d A,Vec2d B,Vec2d C,Vec2d D) {
+    /**
+     * Checks whether two lines represented by 4 points intersect
+     * @param A starting point of first line
+     * @param B ending point of first line
+     * @param C starting point of second line
+     * @param D ending point of second line
+     * @return true if lines intersect, false in other cases
+    **/
+    public static boolean intersect(Vec2d A, Vec2d B,Vec2d C,Vec2d D) {
         if(A.equals(C) || A.equals(D) || B.equals(C) || B.equals(D)) return false;
         return (ccw(A, C, D) != ccw(B, C, D)) && (ccw (A, B, C) != ccw(A, B, D));
     }
 
-    public static Vec2d ClosestPointOnLine(Vec2d points[], Vec2d p){
-        Vec2d ab = points[1].sub(points[0]);
-        Vec2d ap = p.sub(points[0]);
+    /**
+     * Returns the point on a given line that is closest to a given point p
+     * @param A starting point of line
+     * @param B ending point of line
+     * @param p the point for which we want to find the closest point on the straight line
+     * @return the point on a given line that is closest to a given point p
+     **/
+    public static Vec2d ClosestPointOnLine(Vec2d A, Vec2d B, Vec2d p){
+        Vec2d ab = B.sub(A);
+        Vec2d ap = p.sub(A);
 
         double proj = ap.dot(ab);
         double ablen = ab.length();
 
-        Vec2d np = points[0].add(ab.mult(proj/(ablen*ablen)));
+        Vec2d np = A.add(ab.mult(proj/(ablen*ablen)));
         return np;
     }
 
+    /**
+     * Computes collision data for a point P with a triangle defined by vertices A, B, and C.
+     *
+     * @param A The vertex A of the triangle.
+     * @param B The vertex B of the triangle.
+     * @param C The vertex C of the triangle.
+     * @param P The point for which collision data is calculated.
+     * @return A CollisionData object containing information about the collision.
+     */
     public static CollisionData TriangleColisionData(Vec2d A, Vec2d B, Vec2d C, Vec2d P){
         CollisionData cd = new CollisionData();
         cd.colisionOccured = false;
@@ -59,17 +83,15 @@ public class MathFunctions {
         if (c1 < 0 || c2 < 0 || c3 < 0)
             return cd;
 
-        //System.out.println(String.format("c1: %f, c2: %f, c3: %f", c1, c2, c3));
-        //System.out.println(String.format("%s | %s | %s | %s", A,B,C,P));
 
         l = 1 / (c1*c1 + c2*c2 + c3*c3);
 
         if(c1 < c2 && c1 < c3){
-            p = ClosestPointOnLine(new Vec2d[]{B,C}, P);
+            p = ClosestPointOnLine(B,C, P);
         }else if(c2 < c1 && c2 < c3){
-            p = ClosestPointOnLine(new Vec2d[]{A,C}, P);
+            p = ClosestPointOnLine(A,C, P);
         }else{
-            p = ClosestPointOnLine(new Vec2d[]{A,B}, P);
+            p = ClosestPointOnLine(A,B, P);
         }
 
         delta = P.sub(p);
@@ -85,6 +107,14 @@ public class MathFunctions {
         return cd;
     }
 
+    /**
+     * Scales a 2D vector with a specified scaling factor, relative to a given central point.
+     *
+     * @param v      The 2D vector to be scaled.
+     * @param scale  The scaling factor by which the vector should be multiplied.
+     * @param center The central point relative to which the scaling should be performed.
+     * @return A new 2D vector after scaling.
+     */
     public static Vec2d rescale(Vec2d v, double scale, Vec2d center){
         Vec2d res = new Vec2d(v.getX(), v.getY());
         res = res.sub(center);
