@@ -25,7 +25,7 @@ public class GameEngine implements Runnable {
     // Gravity force acting on the objects
     private GravityForce gravity = new GravityForce(new Vec2d(0, 0));
 
-    // Simulation parameters
+    // Simulation pgit branch -m main masterarameters
     private double scale = 1.5;
     private Vec2d center = new Vec2d(0, 0);
     private ChunkBox chbox = new ChunkBox(-100, -100, 600, 600, 70, 70);
