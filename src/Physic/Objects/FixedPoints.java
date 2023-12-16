@@ -6,6 +6,12 @@ public class FixedPoints implements Point{
     double x;
     double y;
 
+    /**
+     * Constructs a FixedPoints object with specified coordinates.
+     *
+     * @param x The x-coordinate of the fixed point.
+     * @param y The y-coordinate of the fixed point.
+     */
     public FixedPoints(double x, double y){
         this.x = x;
         this.y = y;

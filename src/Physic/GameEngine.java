@@ -1,10 +1,7 @@
 package Physic;
 
-import Physic.CollisionDetectors.CollisionDetector;
-import Physic.CollisionDetectors.CollisionTriangle;
-import Physic.CollisionDetectors.CollisionTriangleBox;
-import Physic.Connections.Connection;
-import Physic.Connections.SpringConnection;
+import Physic.CollisionDetectors.*;
+import Physic.Connections.*;
 import Physic.Forces.GravityForce;
 import Physic.Mesh.Mesh;
 import Physic.Objects.*;
@@ -14,15 +11,23 @@ import Physic.Telemetry.Telemetry;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class GameEngine implements Runnable{
-    private ArrayList<PhysicalObjects> physicalObjects = new ArrayList<PhysicalObjects>();
-    private ArrayList<Connection> connections = new ArrayList<Connection>();
-    private ArrayList<CollisionDetector> collisionDetectors = new ArrayList<CollisionDetector>();
-    private ArrayList<Physic.Objects.Point> collisionPoints = new ArrayList<Physic.Objects.Point>();
-    private ArrayList<Mesh> meshs = new ArrayList<Mesh>();
-    private GravityForce gravity = new GravityForce(new Vec2d(0,0));
+/**
+ * The main game engine for the physics simulation.
+ */
+public class GameEngine implements Runnable {
+    // Lists to store physical objects, connections, collision detectors, etc.
+    private ArrayList<PhysicalObjects> physicalObjects = new ArrayList<>();
+    private ArrayList<Connection> connections = new ArrayList<>();
+    private ArrayList<CollisionDetector> collisionDetectors = new ArrayList<>();
+    private ArrayList<Physic.Objects.Point> collisionPoints = new ArrayList<>();
+    private ArrayList<Mesh> meshs = new ArrayList<>();
+
+    // Gravity force acting on the objects
+    private GravityForce gravity = new GravityForce(new Vec2d(0, 0));
+
+    // Simulation parameters
     private double scale = 1.5;
-    private Vec2d center = new Vec2d(0,0);
+    private Vec2d center = new Vec2d(0, 0);
     private ChunkBox chbox = new ChunkBox(-100, -100, 600, 600, 70, 70);
     private double maxTimeRate = 0.01;
     private double minTimeRate = 0.000000001;
@@ -33,137 +38,236 @@ public class GameEngine implements Runnable{
     private boolean running = true;
     private double currentFrame = -1;
 
-    public void run(){
-        while (running){
-            double estimatedTime = (System.nanoTime()/1000000. - currentFrame);
+    /**
+     * Main simulation loop.
+     */
+    public void run() {
+        while (running) {
+            double estimatedTime = (System.nanoTime() / 1000000. - currentFrame);
 
-            currentFrame = (double)System.nanoTime()/1000000.;
+            currentFrame = (double) System.nanoTime() / 1000000.;
 
             double oldTimeRate = timeRate;
             timeRate = Math.min(maxTimeRate, Math.max(minTimeRate, estimatedTime * timeSpeed));
-            timeRateDiff = timeRate/oldTimeRate;
+            timeRateDiff = timeRate / oldTimeRate;
             telemetry.addTimeInfo("timeRate", timeRate);
 
             calculateFrame();
         }
     }
 
+    /**
+     * Set the running state of the game engine.
+     *
+     * @param running The running state.
+     */
     public void setRunning(boolean running) {
         this.running = running;
     }
 
+    /**
+     * Set the telemetry system for collecting performance data.
+     *
+     * @param telemetry The telemetry system.
+     */
     public void setTelemetry(Telemetry telemetry) {
         this.telemetry = telemetry;
     }
 
+    /**
+     * Get the time rate difference.
+     *
+     * @return The time rate difference.
+     */
     public double getTimeRateDiff() {
         return timeRateDiff;
     }
 
-    public void calculateFrame(){
+    /**
+     * Perform calculations for each frame of the simulation.
+     */
+    public void calculateFrame() {
         double fullTime = System.nanoTime();
         double lastTime = System.nanoTime();
         double loopTime = lastTime;
-        for(PhysicalObjects po : physicalObjects){
+
+        // Update accelerations for physical objects
+        for (PhysicalObjects po : physicalObjects) {
             po.accelerationUpdate();
         }
-        telemetry.addTimeInfo("accelerationCalculations", (System.nanoTime() - fullTime)/1000000);
+        telemetry.addTimeInfo("accelerationCalculations", (System.nanoTime() - lastTime) / 1000000);
         lastTime = System.nanoTime();
 
-        for(PhysicalObjects po : physicalObjects){
+        // Update positions for physical objects
+        for (PhysicalObjects po : physicalObjects) {
             po.positionUpdate();
-
         }
-        telemetry.addTimeInfo("physicsCalculations", (System.nanoTime() - fullTime)/1000000);
+        telemetry.addTimeInfo("physicsCalculations", (System.nanoTime() - lastTime) / 1000000);
         lastTime = System.nanoTime();
 
-        for(Point p : collisionPoints){
+        // Update the chunk box
+        for (Point p : collisionPoints) {
             chbox.setObject(p);
         }
 
-        telemetry.addTimeInfo("chunk box update", (System.nanoTime() - fullTime)/1000000);
+        telemetry.addTimeInfo("chunk box update", (System.nanoTime() - lastTime) / 1000000);
 
         lastTime = System.nanoTime();
 
+        // Perform collision detection
         boolean collisionDetected = true;
         int count = 0;
-        while(collisionDetected && count < 10) {
+        while (collisionDetected && count < 10) {
             count++;
             collisionDetected = false;
             for (CollisionDetector cd : collisionDetectors) {
                 int indCount = 0;
-                for (Physic.Objects.Point cp : chbox.getCollisionCandidates(cd.getField())){
-                    indCount ++;
-                    if(cd.checkCollision(cp)){
+                for (Physic.Objects.Point cp : chbox.getCollisionCandidates(cd.getField())) {
+                    indCount++;
+                    if (cd.checkCollision(cp)) {
                         collisionDetected = true;
-                    };
+                    }
+                    ;
                 }
-                telemetry.addTimeInfo("collision candidates", indCount);
+                //telemetry.addTimeInfo("collision candidates", indCount);
             }
         }
 
-        telemetry.addTimeInfo("collisionCalculations", (System.nanoTime() - fullTime)/1000000);
-        telemetry.addTimeInfo("frame - game", (System.nanoTime() - fullTime)/1000000);
+        telemetry.addTimeInfo("collisionCalculations", (System.nanoTime() - lastTime) / 1000000);
+        telemetry.addTimeInfo("frame - game", (System.nanoTime() - fullTime) / 1000000);
     }
 
-    public void resetGame(){
-        physicalObjects = new ArrayList<PhysicalObjects>();
-        connections = new ArrayList<Connection>();
-        collisionDetectors = new ArrayList<CollisionDetector>();
-        collisionPoints = new ArrayList<Physic.Objects.Point>();
-        meshs = new ArrayList<Mesh>();
+    /**
+     * Reset the game by clearing lists of objects and connections.
+     */
+    public void resetGame() {
+        physicalObjects = new ArrayList<>();
+        connections = new ArrayList<>();
+        collisionDetectors = new ArrayList<>();
+        collisionPoints = new ArrayList<>();
+        meshs = new ArrayList<>();
     }
 
+    /**
+     * Get the current time rate.
+     *
+     * @return The current time rate.
+     */
     public double getTimeRate() {
         return timeRate;
     }
 
+    /**
+     * Set the gravity force acting on the objects.
+     *
+     * @param gravity The gravity force.
+     */
     public void setGravity(GravityForce gravity) {
         this.gravity.setConst(gravity.getConst());
     }
 
-    public void setCenter(double x, double y){
-        center = new Vec2d(x,y);
+    /**
+     * Set the center of the simulation.
+     *
+     * @param x X-coordinate of the center.
+     * @param y Y-coordinate of the center.
+     */
+    public void setCenter(double x, double y) {
+        center = new Vec2d(x, y);
     }
 
+    /**
+     * Set the scale of the simulation.
+     *
+     * @param scale The scale factor.
+     */
     public void setScale(double scale) {
         this.scale = scale;
     }
 
+    /**
+     * Get the list of physical objects in the simulation.
+     *
+     * @return List of physical objects.
+     */
     public ArrayList<PhysicalObjects> getPhysicalObjects() {
         return physicalObjects;
     }
 
+    /**
+     * Get the list of connections in the simulation.
+     *
+     * @return List of connections.
+     */
     public ArrayList<Connection> getConnections() {
         return connections;
     }
 
+    /**
+     * Get the list of collision detectors in the simulation.
+     *
+     * @return List of collision detectors.
+     */
     public ArrayList<CollisionDetector> getCollisionDetectors() {
         return collisionDetectors;
     }
 
+    /**
+     * Get the list of collision points in the simulation.
+     *
+     * @return List of collision points.
+     */
     public ArrayList<Point> getCollisionPoints() {
         return collisionPoints;
     }
 
+    /**
+     * Get the list of meshes in the simulation.
+     *
+     * @return List of meshes.
+     */
     public ArrayList<Mesh> getMeshs() {
         return meshs;
     }
 
+    /**
+     * Get the current scale of the simulation.
+     *
+     * @return The current scale.
+     */
     public double getScale() {
         return scale;
     }
 
+    /**
+     * Get the center of the simulation.
+     *
+     * @return The center coordinates.
+     */
     public Vec2d getCenter() {
         return center;
     }
 
+    /**
+     * Get the chunk box used for collision detection.
+     *
+     * @return The chunk box.
+     */
     public ChunkBox getChbox() {
         return chbox;
     }
 
 
-    public Pivot createPivot(double x, double y, double mass){
+    /**
+     * Creates a pivot object with specified coordinates and mass, adds it to the physical objects list,
+     * attaches gravity force, and includes it in collision detection.
+     *
+     * @param x    X-coordinate of the pivot.
+     * @param y    Y-coordinate of the pivot.
+     * @param mass Mass of the pivot.
+     * @return The created pivot.
+     */
+    public Pivot createPivot(double x, double y, double mass) {
         Pivot newPivot = new Pivot(x, y, mass);
         newPivot.setGameEngine(this);
         newPivot.addForce(gravity);
@@ -171,7 +275,16 @@ public class GameEngine implements Runnable{
         collisionPoints.add(newPivot);
         return newPivot;
     }
-    public FixedPivot createFixedPivot(double x, double y){
+
+    /**
+     * Creates a fixed pivot object with specified coordinates, adds it to the physical objects list,
+     * attaches gravity force, and includes it in collision detection.
+     *
+     * @param x X-coordinate of the fixed pivot.
+     * @param y Y-coordinate of the fixed pivot.
+     * @return The created fixed pivot.
+     */
+    public FixedPivot createFixedPivot(double x, double y) {
         FixedPivot newPivot = new FixedPivot(x, y);
         newPivot.setGameEngine(this);
         newPivot.addForce(gravity);
@@ -180,7 +293,15 @@ public class GameEngine implements Runnable{
         return newPivot;
     }
 
-    public FixedPivot createNoCollisionFixedPivot(double x, double y){
+    /**
+     * Creates a fixed pivot object with specified coordinates, adds it to the physical objects list,
+     * and attaches gravity force. Excludes it from collision detection.
+     *
+     * @param x X-coordinate of the fixed pivot.
+     * @param y Y-coordinate of the fixed pivot.
+     * @return The created fixed pivot without collision detection.
+     */
+    public FixedPivot createNoCollisionFixedPivot(double x, double y) {
         FixedPivot newPivot = new FixedPivot(x, y);
         newPivot.setGameEngine(this);
         newPivot.addForce(gravity);
@@ -188,46 +309,140 @@ public class GameEngine implements Runnable{
         return newPivot;
     }
 
-    public void createSpring(PhysicalObjects p1, PhysicalObjects p2, double size, double k){
-        SpringConnection s = new SpringConnection(p1,p2,size, k);
+    /**
+     * Creates a spring connection between two physical objects with specified size and spring constant,
+     * and adds it to the connections list.
+     *
+     * @param p1   First physical object.
+     * @param p2   Second physical object.
+     * @param size Rest length of the spring.
+     * @param k    Spring constant.
+     */
+    public void createSpring(PhysicalObjects p1, PhysicalObjects p2, double size, double k) {
+        SpringConnection s = new SpringConnection(p1, p2, size, k);
         connections.add(s);
     }
 
-    public void createSpring(PhysicalObjects p1, PhysicalObjects p2, double size, double k, double b){
+    /**
+     * Creates a spring connection between two physical objects with specified size, spring constant, and damping,
+     * and adds it to the connections list.
+     *
+     * @param p1   First physical object.
+     * @param p2   Second physical object.
+     * @param size Rest length of the spring.
+     * @param k    Spring constant.
+     * @param b    Damping factor.
+     */
+    public void createSpring(PhysicalObjects p1, PhysicalObjects p2, double size, double k, double b) {
         SpringConnection s = new SpringConnection(p1, p2, size, k, b, 2, 100);
         connections.add(s);
     }
 
-    public void createSpring(PhysicalObjects p1, PhysicalObjects p2, double size, double k, double b, double critSize, double critK){
+    /**
+     * Creates a spring connection between two physical objects with specified size, spring constant, damping,
+     * critical size, and critical spring constant, and adds it to the connections list.
+     *
+     * @param p1       First physical object.
+     * @param p2       Second physical object.
+     * @param size     Rest length of the spring.
+     * @param k        Spring constant.
+     * @param b        Damping factor.
+     * @param critSize Critical size for the spring.
+     * @param critK    Critical spring constant.
+     */
+    public void createSpring(PhysicalObjects p1, PhysicalObjects p2, double size,
+                             double k, double b, double critSize, double critK) {
         SpringConnection s = new SpringConnection(p1, p2, size, k, b, critSize, critK);
         connections.add(s);
     }
 
-    public void createCollisionTriangle(PhysicalObjects poA, PhysicalObjects poB, PhysicalObjects poC, Physic.Objects.Point[] of){
+    /**
+     * Creates a collision triangle between three physical objects and associated collision points,
+     * and adds it to the collision detectors list.
+     *
+     * @param poA First physical object.
+     * @param poB Second physical object.
+     * @param poC Third physical object.
+     * @param of  Associated collision points.
+     */
+    public void createCollisionTriangle(PhysicalObjects poA, PhysicalObjects poB,
+                                        PhysicalObjects poC, Physic.Objects.Point[] of) {
         CollisionDetector nc = new CollisionTriangle(poA, poB, poC, of);
         collisionDetectors.add(nc);
     }
 
-    public void createCollisionTriangleBox(double Ax, double Ay, double Bx, double By, double Cx, double Cy, double f){
-        CollisionDetector nc = new CollisionTriangleBox(new Vec2d(Ax,Ay), new Vec2d(Bx,By), new Vec2d(Cx,Cy), f);
+    /**
+     * Creates a collision triangle box between three specified points and a factor, and adds it to the collision detectors list.
+     *
+     * @param Ax X-coordinate of the first point.
+     * @param Ay Y-coordinate of the first point.
+     * @param Bx X-coordinate of the second point.
+     * @param By Y-coordinate of the second point.
+     * @param Cx X-coordinate of the third point.
+     * @param Cy Y-coordinate of the third point.
+     * @param f  Factor for the collision triangle box.
+     */
+    public void createCollisionTriangleBox(double Ax, double Ay, double Bx, double By,
+                                           double Cx, double Cy, double f) {
+        CollisionDetector nc = new CollisionTriangleBox(new Vec2d(Ax, Ay), new Vec2d(Bx, By), new Vec2d(Cx, Cy), f);
         collisionDetectors.add(nc);
     }
 
-    public void createMesh(Physic.Objects.Point points[], Color color){
-        Mesh m = new Mesh(points,color);
+    /**
+     * Creates a mesh with specified points and color, and adds it to the meshes list.
+     *
+     * @param points Array of points forming the mesh.
+     * @param color  Color of the mesh.
+     */
+    public void createMesh(Physic.Objects.Point points[], Color color) {
+        Mesh m = new Mesh(points, color);
         meshs.add(m);
     }
 
-    public void createQuadrangle(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, Color color, double f){
+
+    /**
+     * Create a quadrangle and associated collision triangles.
+     *
+     * @param x1    X-coordinate of the first point.
+     * @param y1    Y-coordinate of the first point.
+     * @param x2    X-coordinate of the second point.
+     * @param y2    Y-coordinate of the second point.
+     * @param x3    X-coordinate of the third point.
+     * @param y3    Y-coordinate of the third point.
+     * @param x4    X-coordinate of the fourth point.
+     * @param y4    Y-coordinate of the fourth point.
+     * @param color Color of the quadrangle.
+     * @param f     Factor for the collision triangles.
+     */
+    public void createQuadrangle(double x1, double y1, double x2, double y2,
+                                 double x3, double y3, double x4, double y4,
+                                 Color color, double f) {
+        // Create collision triangles
         createCollisionTriangleBox(x1, y1, x2, y2, x3, y3, f);
         createCollisionTriangleBox(x2, y2, x3, y3, x4, y4, f);
         createCollisionTriangleBox(x3, y3, x4, y4, x1, y1, f);
         createCollisionTriangleBox(x4, y4, x1, y1, x2, y2, f);
+
+        // Create mesh for the quadrangle
         createMesh(new Physic.Objects.Point[]{
-                new FixedPoints(x1,y1), new FixedPoints(x2, y2), new FixedPoints(x3, y3), new FixedPoints(x4, y4)
+                new FixedPoints(x1, y1), new FixedPoints(x2, y2),
+                new FixedPoints(x3, y3), new FixedPoints(x4, y4)
         }, color);
     }
 
+
+    /**
+     * Create a square blob of interconnected pivots.
+     *
+     * @param x     X-coordinate of the blob center.
+     * @param y     Y-coordinate of the blob center.
+     * @param size  Size of the blob.
+     * @param k     Spring constant.
+     * @param b     Damping factor.
+     * @param mass  Mass of individual pivots.
+     * @param color Color of the mesh.
+     * @return Array of created pivots.
+     */
     public Pivot[] createSquareBlob(double x, double y, double size, double k, double b, double mass, Color color){
         mass /= 40;
         Pivot[] p = new Pivot[8];
@@ -280,6 +495,19 @@ public class GameEngine implements Runnable{
         return new Pivot[]{p[0],p[2],p[6],p[4]};
     }
 
+    /**
+     * Create a round blob of interconnected pivots.
+     *
+     * @param x       X-coordinate of the blob center.
+     * @param y       Y-coordinate of the blob center.
+     * @param radious Radius of the blob.
+     * @param kb      Spring constant for border springs.
+     * @param kc      Spring constant for diagonal springs.
+     * @param b       Damping factor.
+     * @param mass    Mass of individual pivots.
+     * @param color   Color of the mesh.
+     * @return Array of created pivots.
+     */
     public Pivot[] createRoundBlob(double x, double y, double radious, double kb, double kc, double b, double mass, Color color){
         final int elemCount = 16;
         mass /= 2*elemCount;
