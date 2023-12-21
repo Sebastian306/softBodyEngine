@@ -52,6 +52,7 @@ Demonstrates simple scenarios with boxes and a box hanging on a spring.
 | ![Scene1_Graphic](screenshots/Scene1_Graphic_very_small.gif) | ![Scene1_Physic](screenshots/Scene1_Physic_very_small.gif) |
 |--------------------------------------------------------------|------------------------------------------------------------|
 | Graphic mode                                                 | Physic mode                                                |
+
 You can find better quality gifs in [screenshots folder](./screenshots).
 
 ### Scene 2, Complex Shapes: 
@@ -61,6 +62,7 @@ handling of complex bodies.
 | ![Scene2_Graphic](screenshots/Scene2_Graphic_very_small.gif) | ![Scene2_Physic](screenshots/Scene2_Physic_very_small.gif) |
 |--------------------------------------------------------------|------------------------------------------------------------|
 | Graphic mode                                                 | Physic mode                                                |
+
 You can find better quality gifs in [screenshots folder](./screenshots).
 
 ### Scene 3, Fricrion: 
@@ -70,6 +72,7 @@ highlights the ability to modify surface friction.
 | ![Scene3_Graphic](screenshots/Scene3_Graphic_very_small.gif) | ![Scene3_Physic](screenshots/Scene3_Physic_very_small.gif) |
 |--------------------------------------------------------------|------------------------------------------------------------|
 | Graphic mode                                                 | Physic mode                                                |
+
 You can find better quality gifs in [screenshots folder](./screenshots).
 
 ## Usage
