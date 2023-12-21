@@ -49,25 +49,28 @@ The project includes three demo scenes to showcase its capabilities:
 ### Scene 1, Basic Scene: 
 Demonstrates simple scenarios with boxes and a box hanging on a spring.
 
-| ![Scene1_Graphic](screenshots/Scene1_Graphic_small.gif) | ![Scene1_Physic](screenshots/Scene1_Physic_small.gif) |
-|---------------------------------------------------------|-------------------------------------------------------|
-| Graphic mode                                            | Physic mode                                           |
+| ![Scene1_Graphic](screenshots/Scene1_Graphic_very_small.gif) | ![Scene1_Physic](screenshots/Scene1_Physic_very_small.gif) |
+|--------------------------------------------------------------|------------------------------------------------------------|
+| Graphic mode                                                 | Physic mode                                                |
+You can find better quality gifs in [screenshots folder](./screenshots).
 
 ### Scene 2, Complex Shapes: 
 Displays more intricate shapes resembling spheres to showcase the system's 
 handling of complex bodies.
 
-| ![Scene2_Graphic](screenshots/Scene2_Graphic_small.gif) | ![Scene2_Physic](screenshots/Scene2_Physic_small.gif) |
-|---------------------------------------------------------|-------------------------------------------------------|
-| Graphic mode                                            | Physic mode                                           |
+| ![Scene2_Graphic](screenshots/Scene2_Graphic_very_small.gif) | ![Scene2_Physic](screenshots/Scene2_Physic_very_small.gif) |
+|--------------------------------------------------------------|------------------------------------------------------------|
+| Graphic mode                                                 | Physic mode                                                |
+You can find better quality gifs in [screenshots folder](./screenshots).
 
 ### Scene 3, Fricrion: 
 Shows two blobs sliding on different surfaces with varying friction. This demo 
 highlights the ability to modify surface friction.
 
-| ![Scene3_Graphic](screenshots/Scene3_Graphic_small.gif) | ![Scene3_Physic](screenshots/Scene3_Physic_small.gif) |
-|---------------------------------------------------------|-------------------------------------------------------|
-| Graphic mode                                            | Physic mode                                           |
+| ![Scene3_Graphic](screenshots/Scene3_Graphic_very_small.gif) | ![Scene3_Physic](screenshots/Scene3_Physic_very_small.gif) |
+|--------------------------------------------------------------|------------------------------------------------------------|
+| Graphic mode                                                 | Physic mode                                                |
+You can find better quality gifs in [screenshots folder](./screenshots).
 
 ## Usage
 To run the program, the Java classes to build the simulation and execute the 
