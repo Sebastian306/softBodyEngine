@@ -49,40 +49,25 @@ The project includes three demo scenes to showcase its capabilities:
 ### Scene 1, Basic Scene: 
 Demonstrates simple scenarios with boxes and a box hanging on a spring.
 
-<div style="display: flex;">
-  <div style="flex: 50%; padding: 10px;">
-    <img src="screenshots/Scene1_Graphic.gif" alt="Obraz 1" style="width: 100%; height: auto;">
-  </div>
-  <div style="flex: 50%; padding: 10px;">
-    <img src="screenshots/Scene1_Physic.gif" alt="Obraz 2" style="width: 100%; height: auto;">
-  </div>
-</div>
+| ![Scene1_Graphic](screenshots/Scene1_Graphic.gif) | ![Scene1_Physic](screenshots/Scene1_Physic.gif) |
+| --- | --- |
+| Graphic mode | Physic mode |
 
 ### Scene 2, Complex Shapes: 
 Displays more intricate shapes resembling spheres to showcase the system's 
 handling of complex bodies.
 
-<div style="display: flex;">
-  <div style="flex: 50%; padding: 10px;">
-    <img src="screenshots/Scene2_Graphic.gif" alt="Obraz 1" style="width: 100%; height: auto;">
-  </div>
-  <div style="flex: 50%; padding: 10px;">
-    <img src="screenshots/Scene2_Physic.gif" alt="Obraz 2" style="width: 100%; height: auto;">
-  </div>
-</div>
+| ![Scene2_Graphic](screenshots/Scene2_Graphic.gif) | ![Scene2_Physic](screenshots/Scene2_Physic.gif) |
+| --- | --- |
+| Graphic mode | Physic mode |
 
 ### Scene 3, Fricrion: 
 Shows two blobs sliding on different surfaces with varying friction. This demo 
 highlights the ability to modify surface friction.
 
-<div style="display: flex;">
-  <div style="flex: 50%; padding: 10px;">
-    <img src="screenshots/Scene3_Graphic.gif" alt="Obraz 1" style="width: 100%; height: auto;">
-  </div>
-  <div style="flex: 50%; padding: 10px;">
-    <img src="screenshots/Scene3_Physic.gif" alt="Obraz 2" style="width: 100%; height: auto;">
-  </div>
-</div>
+| ![Scene3_Graphic](screenshots/Scene3_Graphic.gif) | ![Scene3_Physic](screenshots/Scene3_Physic.gif) |
+| --- | --- |
+| Graphic mode | Physic mode |
 
 ## Usage
 To run the program, the Java classes to build the simulation and execute the 
